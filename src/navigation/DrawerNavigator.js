@@ -41,7 +41,6 @@ const DrawerNavigator = () => {
         options={{ title: 'Carrinho' }}
       />
     </Drawer.Navigator>
-
   );
 };
 
