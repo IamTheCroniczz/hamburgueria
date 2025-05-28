@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: '#FFF8F0', // fundo clarinho e quentinho
   },
   logo: {
     width: 220,
@@ -15,13 +15,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   card: {
-    backgroundColor: '#F5E1C2',
+    backgroundColor: '#F5E1C2', // cor suave pra card
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
-    flex: 0.48, // pra pegar quase metade da largura da tela (2 cards por linha)
+    flex: 0.48, // metade da tela pra 2 colunas, com espaçamento
     alignItems: 'center',
-    // sombra estilo iOS
+    // sombra iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -30,27 +30,47 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: 140,
     borderRadius: 10,
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  infoContainer: {
+    width: '100%',
   },
   nome: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#4E342E',
-    textAlign: 'center',
-  },
-  preco: {
-    fontSize: 14,
-    color: '#D84315',
-    fontWeight: 'bold',
-    marginVertical: 4,
+    textAlign: 'left',
+    marginBottom: 4,
   },
   descricao: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#6D4C41',
-    textAlign: 'center',
+    textAlign: 'left',
+    marginBottom: 12,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  preco: {
+    fontSize: 16,
+    color: '#D84315',
+    fontWeight: 'bold',
+  },
+  botaoAdicionar: {
+    backgroundColor: '#D84315',
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+  },
+  textoBotao: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   splashContainer: {
     flex: 1,
