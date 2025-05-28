@@ -10,14 +10,13 @@ import {
 } from 'react-native';
 import styles from '../Styles/ProdutosStyles';
 import Logo from '../../assets/logo.png';
-import CarrinhoImg from '../../assets/cart.png'; // imagem do carrinho animado
+import CarrinhoImg from '../../assets/cart.png';
 
 import Img1 from '../../assets/img1.png';
 import Img3 from '../../assets/3.png';
 import Img4 from '../../assets/4.png';
-import Img5 from '../../assets/5.png';
 
-const produtos = [
+const produtosIniciais = [
     {
         id: '1',
         nome: 'Hamburguer Clássico',
@@ -43,33 +42,61 @@ const produtos = [
 
 const CarrinhoScreen = () => {
     const [carregando, setCarregando] = useState(true);
+    const [produtos, setProdutos] = useState(produtosIniciais);
     const carrinhoAnim = useRef(new Animated.Value(0)).current;
-
-    const total = produtos.reduce((acc, item) => acc + item.preco * item.quantidade, 0).toFixed(2);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setCarregando(false);
-        }, 2500);
+        }, 2200);
 
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
         Animated.loop(
-            Animated.timing(carrinhoAnim, {
-                toValue: 1,
-                duration: 2500,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            })
+            Animated.sequence([
+                Animated.timing(carrinhoAnim, {
+                    toValue: 1,
+                    duration: 2000,
+                    easing: Easing.linear,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(carrinhoAnim, {
+                    toValue: 0,
+                    duration: 0,
+                    useNativeDriver: true,
+                }),
+            ])
         ).start();
     }, [carrinhoAnim]);
 
     const translateX = carrinhoAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [-200, 400],
+        outputRange: [-150, 350],
     });
+
+    const total = produtos
+        .reduce((acc, item) => acc + item.preco * item.quantidade, 0)
+        .toFixed(2);
+
+    const incrementar = (id) => {
+        setProdutos((old) =>
+            old.map((p) =>
+                p.id === id ? { ...p, quantidade: p.quantidade + 1 } : p
+            )
+        );
+    };
+
+    const decrementar = (id) => {
+        setProdutos((old) =>
+            old.map((p) =>
+                p.id === id && p.quantidade > 1
+                    ? { ...p, quantidade: p.quantidade - 1 }
+                    : p
+            )
+        );
+    };
 
     if (carregando) {
         return (
@@ -83,6 +110,61 @@ const CarrinhoScreen = () => {
         );
     }
 
+    const renderProduto = ({ item }) => (
+        <View style={styles.card}>
+            <Image source={item.imagem} style={styles.image} />
+            <View style={{ flex: 1, paddingLeft: 12 }}>
+                <Text style={styles.nome}>{item.nome}</Text>
+                <Text style={styles.preco}>R$ {item.preco.toFixed(2)}</Text>
+
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 8,
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => decrementar(item.id)}
+                        style={{
+                            backgroundColor: '#d84315',
+                            paddingHorizontal: 12,
+                            paddingVertical: 4,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                            -
+                        </Text>
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            marginHorizontal: 12,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: '#4E342E',
+                        }}
+                    >
+                        {item.quantidade}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => incrementar(item.id)}
+                        style={{
+                            backgroundColor: '#d84315',
+                            paddingHorizontal: 12,
+                            paddingVertical: 4,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                            +
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <Image source={Logo} style={styles.logo} />
@@ -91,14 +173,9 @@ const CarrinhoScreen = () => {
             <FlatList
                 data={produtos}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Image source={item.imagem} style={styles.image} />
-                        <Text style={styles.nome}>{item.nome}</Text>
-                        <Text style={styles.preco}>R$ {item.preco.toFixed(2)}</Text>
-                    </View>
-                )}
+                renderItem={renderProduto}
                 showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 120 }}
             />
 
             <View style={styles.enderecoContainer}>
@@ -113,7 +190,11 @@ const CarrinhoScreen = () => {
                 <Text style={styles.totalValor}>R$ {total}</Text>
             </View>
 
-            <TouchableOpacity style={styles.botaoFinalizar}>
+            <TouchableOpacity
+                style={styles.botaoFinalizar}
+                activeOpacity={0.8}
+                onPress={() => alert('Pedido finalizado!')}
+            >
                 <Text style={styles.botaoTexto}>Finalizar Pedido</Text>
             </TouchableOpacity>
         </View>
